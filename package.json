@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@prettier/plugin-ruby": "^1.5.5",
+    "vercel": "^21.3.3"
+  },
+  "engines": {
+    "node": "14"
+  }
+}

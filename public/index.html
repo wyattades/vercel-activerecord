@@ -1,0 +1,66 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VercelTest</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+  </head>
+  <body>
+    <h1>Vercel Test</h1>
+    <pre></pre>
+    <p></p>
+    <div>
+      <button onclick="addEpisodes()" style="margin-right: 8px">Refresh</button>
+      <button onclick="wipeEpisodes()">Reset</button>
+    </div>
+
+    <script>
+      async function api(url, method = "GET") {
+        const startAt = performance.now();
+
+        let data, error;
+        try {
+          data = await $.get({ url, method });
+        } catch (err) {
+          console.error(err);
+          error = err;
+          data = err.responseJSON || err.responseText || null;
+        }
+
+        const delta = performance.now() - startAt;
+
+        return { data, error, delta };
+      }
+
+      async function apiUI(url, method = "GET") {
+        const pre = document.querySelector("pre");
+        const p = document.querySelector("p");
+
+        p.textContent = "LOADING...";
+        pre.textContent = "";
+
+        const { data, error, delta } = await api(url, method);
+
+        pre.textContent =
+          typeof data === "object" && data
+            ? JSON.stringify(data, null, 2)
+            : data || "";
+        pre.style.color = error ? "pink" : "white";
+
+        p.textContent = `${method} ${url} timing: ${delta}ms`;
+      }
+
+      async function addEpisodes() {
+        await apiUI("/api/add_episode");
+      }
+
+      async function wipeEpisodes() {
+        await apiUI("/api/wipe_episodes");
+      }
+
+      $(addEpisodes);
+    </script>
+  </body>
+</html>

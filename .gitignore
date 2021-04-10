@@ -1,0 +1,15 @@
+.vercel
+
+# Supabase
+.supabase
+
+.bundle
+
+node_modules
+
+vendor/bundle
+
+*.log
+
+vc__handler__ruby.rb
+.env
