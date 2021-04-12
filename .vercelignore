@@ -1,5 +1,5 @@
 .env
-.bundle
-.supabase
+/.bundle
+/.supabase
 
-vc__handler__ruby.rb
+/vc__handler__ruby.rb

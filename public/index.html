@@ -3,12 +3,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VercelTest</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Vercel ActiveRecord POC</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
   </head>
   <body>
-    <h1>Vercel Test</h1>
+    <h1>Vercel ActiveRecord POC</h1>
     <pre></pre>
     <p></p>
     <div>
@@ -20,18 +20,16 @@
       async function api(url, method = "GET") {
         const startAt = performance.now();
 
-        let data, error;
-        try {
-          data = await $.get({ url, method });
-        } catch (err) {
-          console.error(err);
-          error = err;
-          data = err.responseJSON || err.responseText || null;
-        }
+        const res = await axios({ url, method, validateStatus: null });
 
         const delta = performance.now() - startAt;
 
-        return { data, error, delta };
+        return {
+          data: res.data,
+          error: res.statusText !== "OK",
+          delta,
+          innerDelta: res.headers["x-timing-ms"],
+        };
       }
 
       async function apiUI(url, method = "GET") {
@@ -41,7 +39,7 @@
         p.textContent = "LOADING...";
         pre.textContent = "";
 
-        const { data, error, delta } = await api(url, method);
+        const { data, error, delta, innerDelta } = await api(url, method);
 
         pre.textContent =
           typeof data === "object" && data
@@ -49,7 +47,9 @@
             : data || "";
         pre.style.color = error ? "pink" : "white";
 
-        p.textContent = `${method} ${url} timing: ${delta}ms`;
+        p.textContent = `${method} ${url} timing: ${delta}ms, innerTiming: ${
+          innerDelta || "?"
+        }ms`;
       }
 
       async function addEpisodes() {
@@ -60,7 +60,7 @@
         await apiUI("/api/wipe_episodes");
       }
 
-      $(addEpisodes);
+      window.addEventListener("load", addEpisodes);
     </script>
   </body>
 </html>
