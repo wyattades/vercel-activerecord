@@ -91,13 +91,13 @@ module HandlerMethods
 
     case content_type_sym
     when :json
-      render json: { message: err.message }, status: status
+      render json: { message: error.message }, status: status
     when :html
       render html:
-               "<html><body><h1>Error #{status}</h1><p>#{err.message}</p></body></html>",
+               "<html><body><h1>Error #{status}</h1><p>#{error.message}</p></body></html>",
              status: status
     when :text
-      render text: err.message, status: status
+      render text: error.message, status: status
     end
   end
 
@@ -130,8 +130,8 @@ def init_handler
 
       begin
         handler
-      rescue => err
-        render_error(err)
+      rescue => error
+        render_error(error)
       end
     end,
   )
