@@ -116,7 +116,7 @@ module HandlerMethods
   end
 
   private def content_type_header(sym)
-    HandlerMethods::ContentTypes[sym] | HandlerMethods::ContentTypes[:html]
+    HandlerMethods::ContentTypes[sym] || HandlerMethods::ContentTypes[:html]
   end
 end
 
